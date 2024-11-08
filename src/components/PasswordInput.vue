@@ -1,31 +1,24 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { CRITERIA , COMMON_PASSWORDS} from "../Constants/constants"
 
 const password = ref('');
 const feedback = ref<string[]>([]);
 const strengthScore = ref(0);
-const commonPasswords = ['password', '12345', 'qwerty', 'abc123', 'admin', 'welcome', 'letmein', 'monkey', '123123', 'password1', '123qwe', 'iloveyou', '1q2w3e4r', 'sunshine', 'qwertyuiop', 'dragon', 'football', '1234', 'password123']; 
 const inputUsername = ref(''); 
-
-const criteria = [
-  { regex: /[a-z]/, points: 2, message: "Include at least one lowercase letter." },
-  { regex: /[A-Z]/, points: 2, message: "Include at least one uppercase letter." },
-  { regex: /[0-9]/, points: 2, message: "Include at least one digit." },
-  { regex: /[!@#\$%\^&\*]/, points: 4, message: "Include at least one special character (!@#$%^&*)." }
-];
 
 function evaluatePassword(password: string): number {
   let score = 0;
   feedback.value = [];
 
   if (password.length < 8) return showFeedback("Password must be at least 8 characters long.", 0);
-  if (commonPasswords.includes(password.toLowerCase())) return showFeedback("Password is too common. Please choose a more secure one.", 0);
+  if (COMMON_PASSWORDS.includes(password.toLowerCase())) return showFeedback("Password is too common. Please choose a more secure one.", 0);
 
   if (inputUsername.value.trim() && password === inputUsername.value) {
     return showFeedback("Password cannot be the same as the username.", 0);
   }
 
-  criteria.forEach(({ regex, points, message }) => {
+  CRITERIA.forEach(({ regex, points, message }) => {
     if (regex.test(password)) score += points;
     else feedback.value.push(message);
   });
